@@ -1,0 +1,64 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('article/index')}">{:lang('ADMIN_LINK_INDEX')}</a></li>
+			<li class="active"><a href="{:url('article/add')}">{:lang('ADMIN_LINK_ADD')}</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('article/addPost')}">
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label">文章标题<span class="form-required">*</span></label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-name" name="name">
+				</div>
+			</div>
+			<!-- <div class="form-group">
+				<label for="input-url" class="col-sm-2 control-label">链接地址<span class="form-required">*</span></label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-url" name="url">
+				</div>
+			</div> -->
+			<div class="form-group">
+				<label for="input-image" class="col-sm-2 control-label">展示图片</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-image" readonly name="image"> 
+					<a href="javascript:uploadOneImage('图片上传','#input-image');">上传图片</a>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-target" class="col-sm-2 control-label">文章分类<span class="form-required">*</span></label>
+				<div class="col-md-6 col-sm-10">
+					<select class="form-control" name="category" id="input-target">
+						<foreach name="targets" item="vo">
+						<option value="1">{$vo}</option>
+						</foreach>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-description" class="col-sm-2 control-label">文章内容<span class="form-required">*</span></label>
+				<!-- <script id="editor" type="text/plain" style="width:1024px;height:500px;"></script> -->
+				<div class="col-md-6 col-sm-10">
+					<script id="editor" type="text/plain"  name="content" ></script>
+					<!-- <textarea class="form-control" name="description" id="input-description" ></textarea> -->
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+					<a class="btn btn-default" href="javascript:history.back(-1);">{:lang('BACK')}</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+	<script type="text/javascript" charset="utf-8" src="/static/js/ueditor/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="/static/js/ueditor/ueditor.all.min.js"> </script>
+	<script type="text/javascript">
+		//实例化编辑器
+		//建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+		var ue = UE.getEditor('editor');
+	</script>
+</body>
+</html>

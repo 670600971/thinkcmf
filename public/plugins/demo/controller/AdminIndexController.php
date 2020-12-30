@@ -53,6 +53,7 @@ class AdminIndexController extends PluginAdminBaseController
      */
     public function index()
     {
+        // dump(1111);exit;
 //        $result = $this->validate([], 'Demo');
 //        if ($result !== true) {
 //            $this->error($result);
