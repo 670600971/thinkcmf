@@ -18,6 +18,7 @@ class ArticleValidate extends Validate
         'title' => 'require',
         'thumb'  => 'require',
         'c_id'  => 'require',
+        'ch_id'  => 'require',
         'content'  => 'require',
     ];
 
@@ -25,6 +26,7 @@ class ArticleValidate extends Validate
         'title.require' => '名称不能为空',
         'thumb.require'  => '图片不能为空',
         'c_id.require'  => '分类不能为空',
+        'ch_id.require'  => '子分类不能为空',
         'content.require'  => '文章内容不能为空',
     ];
 

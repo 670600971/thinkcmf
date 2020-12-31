@@ -3,8 +3,8 @@
 <body>
 	<div class="wrap">
 		<ul class="nav nav-tabs">
-			<li><a href="{:url('article/index')}">{:lang('ADMIN_LINK_INDEX')}</a></li>
-			<li class="active"><a href="{:url('article/add')}">{:lang('ADMIN_LINK_ADD')}</a></li>
+			<li><a href="{:url('article/index')}">文章列表</a></li>
+			<li class="active"><a href="{:url('article/add')}">添加文章</a></li>
 		</ul>
 		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('article/addPost')}">
 			<div class="form-group">
@@ -13,12 +13,12 @@
 					<input type="text" class="form-control" id="input-name" name="name">
 				</div>
 			</div>
-			<!-- <div class="form-group">
-				<label for="input-url" class="col-sm-2 control-label">链接地址<span class="form-required">*</span></label>
+			<div class="form-group">
+				<label for="input-url" class="col-sm-2 control-label">作者<span class="form-required">*</span></label>
 				<div class="col-md-6 col-sm-10">
-					<input type="text" class="form-control" id="input-url" name="url">
+					<input type="text" class="form-control" id="input-url" name="author">
 				</div>
-			</div> -->
+			</div>
 			<div class="form-group">
 				<label for="input-image" class="col-sm-2 control-label">展示图片</label>
 				<div class="col-md-6 col-sm-10">
@@ -30,20 +30,62 @@
 				<label for="input-target" class="col-sm-2 control-label">文章分类<span class="form-required">*</span></label>
 				<div class="col-md-6 col-sm-10">
 					<select class="form-control" name="category" id="input-target">
-						<foreach name="targets" item="vo">
-						<option value="1">{$vo}</option>
+						<option value="">请选择分类</option>
+						<foreach name="parent_category" item="vo">
+						<option  value="{$vo.id}">{$vo.name}</option>
 						</foreach>
 					</select>
 				</div>
 			</div>
 			<div class="form-group">
+				<label for="ch_id" class="col-sm-2 control-label">文章子分类<span class="form-required">*</span></label>
+				<div class="col-md-6 col-sm-10">
+					<select class="form-control" name="ch_id" id="ch_id">
+						<option value="">请选择子分类</option>
+
+					</select>
+				</div>
+			</div>			
+			<div class="form-group">
 				<label for="input-description" class="col-sm-2 control-label">文章内容<span class="form-required">*</span></label>
-				<!-- <script id="editor" type="text/plain" style="width:1024px;height:500px;"></script> -->
 				<div class="col-md-6 col-sm-10">
 					<script id="editor" type="text/plain"  name="content" ></script>
-					<!-- <textarea class="form-control" name="description" id="input-description" ></textarea> -->
 				</div>
 			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">是否推荐</label>
+				<div class="col-md-6 col-sm-10">
+					<label class="radio-inline">
+						<input type="radio" name="is_rec" checked value="1"> 是
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="is_rec" value="0"> 否
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">是否热门</label>
+				<div class="col-md-6 col-sm-10">
+					<label class="radio-inline">
+						<input type="radio" name="is_hot" checked value="1"> 是
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="is_hot" value="0"> 否
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">是否显示</label>
+				<div class="col-md-6 col-sm-10">
+					<label class="radio-inline">
+						<input type="radio" name="is_show" checked value="1"> 是
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="is_show" value="0"> 否
+					</label>
+				</div>
+			</div>			
+
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
 					<button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
@@ -59,6 +101,23 @@
 		//实例化编辑器
 		//建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
 		var ue = UE.getEditor('editor');
+		var data = {:json_encode($parent_category)};
+		$("#input-target").click(function(){
+			var c_id = $(this).val();
+			$('#ch_id').empty()
+			var html = '<option value="">请选择子分类</option>';
+			if(c_id != ''){
+				$.each(data,function(index,value){
+					if(c_id == value['id'] && value['children'] != ''){
+						$.each(value['children'],function(i,v){
+							html += '<option value="'+v['id']+'">'+v['name']+'</option>'
+						});
+					}
+
+				});
+			}
+			$('#ch_id').append(html)
+		})
 	</script>
 </body>
 </html>

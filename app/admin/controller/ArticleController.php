@@ -13,6 +13,7 @@ namespace app\admin\controller;
 use cmf\controller\AdminBaseController;
 use app\admin\model\ArticleModel;
 use app\admin\model\LinkModel;
+use app\admin\model\NavMenuModel;
 class ArticleController extends AdminBaseController
 {
     protected $targets = ["_blank" => "新标签页打开", "_self" => "本窗口打开"];
@@ -42,12 +43,21 @@ class ArticleController extends AdminBaseController
             return $content;
         }
 
-        $linkModel = new LinkModel();
-        $links     = $linkModel->select();
-        $this->assign('links', $links);
-        // dump($links);
+        $ArticleModel = new ArticleModel();
+        $list     = $ArticleModel->select();
+
+        //判断显示与否
+        $data = [
+            ['label-default','否'],
+            ['label-success','是']
+        ];
+        $this->assign('data', $data);
+        $this->assign('list', $list);
+        // dump($list);exit;
         return $this->fetch();
     }
+
+
 
     /**
      * 添加友情链接
@@ -64,9 +74,15 @@ class ArticleController extends AdminBaseController
      */
     public function add()
     {
+        $NavMenuModel = new NavMenuModel();
+        $parent_category = $NavMenuModel->navMenusTreeArray();
+
+        $this->assign('parent_category', $parent_category);
         $this->assign('targets', $this->targets);
         return $this->fetch();
     }
+
+
 
     /**
      * 添加友情链接提交保存
@@ -83,14 +99,21 @@ class ArticleController extends AdminBaseController
      */
     public function addPost()
     {
-        $data      = $this->request->param();
-        // dump($data);exit;
-        $data['title'] = $this->request->param('name');
-        $data['thumb'] = $this->request->param('image');
-        $data['content'] = $this->request->param('content');
-        $data['c_id'] = $this->request->param('category');
-        // $data['title'] = $this->request->param('name');
-        // $data['title'] = $this->request->param('name');
+        $NavMenuModel = new NavMenuModel();
+        
+        $data['title']      = $this->request->param('name');
+        $data['author']     = $this->request->param('author');
+        $data['thumb']      = $this->request->param('image');
+        $data['content']    = $this->request->param('content');
+        $data['c_id']       = $this->request->param('category');
+        $data['ch_id']      = $this->request->param('ch_id');
+        $data['is_rec']     = $this->request->param('is_rec');
+        $data['is_hot']     = $this->request->param('is_hot');
+        $data['is_show']    = $this->request->param('is_show');
+        $data['posttime']   = time();
+        $combine_name       = $NavMenuModel->navCombine($data['c_id'],$data['ch_id']);
+        $data['c_description']   = $combine_name;
+
         $ArticleModel = new ArticleModel();
         $result    = $this->validate($data, 'Article');
         if ($result !== true) {
@@ -120,10 +143,14 @@ class ArticleController extends AdminBaseController
     public function edit()
     {
         $id        = $this->request->param('id', 0, 'intval');
-        $linkModel = new LinkModel();
-        $link      = $linkModel->find($id);
+        $NavMenuModel = new NavMenuModel();
+        $parent_category = $NavMenuModel->navMenusTreeArray();
+        $ArticleModel = new ArticleModel();
+        $data = $ArticleModel->where('id',$id)->find();
+
+        $this->assign('data', $data);
+        $this->assign('parent_category', $parent_category);
         $this->assign('targets', $this->targets);
-        $this->assign('link', $link);
         return $this->fetch();
     }
 
@@ -169,8 +196,8 @@ class ArticleController extends AdminBaseController
     public function delete()
     {
         $id = $this->request->param('id', 0, 'intval');
-        LinkModel::destroy($id);
-        $this->success("删除成功！", url("link/index"));
+        ArticleModel::destroy($id);
+        $this->success("删除成功！");
     }
 
     /**
