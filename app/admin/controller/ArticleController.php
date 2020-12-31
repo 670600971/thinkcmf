@@ -197,7 +197,7 @@ class ArticleController extends AdminBaseController
     {
         $id = $this->request->param('id', 0, 'intval');
         ArticleModel::destroy($id);
-        $this->success("删除成功！");
+        $this->success("删除成功！", url("article/index"));
     }
 
     /**
